@@ -183,6 +183,12 @@
 # Plot variation of size graph
 
 {
-    ggplot(dm_long, aes(x = head, y= body, col = sex )) +
-        geom_point()
+    ggplot(dm_long, aes(x = head, y = body, color = Development)) +
+        geom_point(size = 3) +
+        scale_color_manual(values = c(
+          "Pseudergate" = "#4169E1",  # royal blue
+          "TW" = "#e6ab02"            # mustard yellow
+        )) +
+        theme_classic()
+
 }
