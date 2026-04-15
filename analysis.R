@@ -155,8 +155,8 @@
             facet_wrap(~trait, scales = "free_y") +
             theme_classic(base_size = 14) +
             scale_fill_manual(values = c(
-                "Pseudergate" = "#0072B2",  # blue
-                "TW" = "#E69F00"        # orange
+                "Pseudergate" = "#0071B1",  # blue
+                "TW" = "#EDC261"        # orange
               ))#+
               theme(
                 legend.position = "none",
@@ -183,7 +183,7 @@
 # Plot variation of size graph
 
 {
-      ggplot(dm_long, aes(x = head, y = body, color = Development)) +
+      ggplot(dm_long, aes(x = log(head), y = log(body), color = Development)) +
         geom_point(size = 3, alpha = 0.8) +
         scale_color_manual(values = c(
           "Pseudergate" = "#0071B1",
@@ -191,8 +191,8 @@
         )) +
         theme_classic(base_size = 14) +
         labs(
-          x = "Head",
-          y = "Body",
+          x = "(log) Head",
+          y = "(log) Body",
           color = "Development"
         )
 }
