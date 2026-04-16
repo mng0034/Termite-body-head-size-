@@ -196,3 +196,21 @@
           color = "Development"
         )
 }
+# Analysis 
+{
+  result_long_head <- result_long %>%
+    filter(trait == "head") 
+  
+  result_long_body = result_long %>%
+    filter(trait == "body") 
+  
+# testing overall development  effects on head and body variation
+  t.test(variation ~ Development, data =  result_long_head)
+  t.test(variation ~ Development, data = result_long_body)
+  
+  result_long$Development = as.factor(result_long$Development)
+  nlevels(result_long$Development)
+  levels(long_dm_head$Development)
+  
+  }
+
