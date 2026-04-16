@@ -209,8 +209,6 @@
   t.test(variation ~ Development, data = result_long_body)
   
   result_long$Development = as.factor(result_long$Development)
-  nlevels(result_long$Development)
-  levels(long_dm_head$Development)
   
   }
 
