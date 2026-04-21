@@ -177,7 +177,10 @@
           cols = c(f_head, f_body, m_head, m_body),
           names_to = c("sex", ".value"),
           names_sep = "_"
-  )
+  )%>%
+    mutate(
+      log_head = log(head),
+      log_body = log(body)
 }
 
 # Plot variation of size graph
@@ -209,6 +212,14 @@
   t.test(variation ~ Development, data = result_long_body)
   
   result_long$Development = as.factor(result_long$Development)
+# testing development and sex significance
   
+  res = lm(variation ~ Development * sex, data =  result_long_head)
+  summary(res)
+
+  res1 = lm(variation ~ Development * sex, data =  result_long_body)
+  summary(res1)
+# Correlation of body length and head width 
+  cor.test(dm_long$log_head, dm_long$log_body)
   }
 
