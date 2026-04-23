@@ -39,26 +39,34 @@
 
 {
     result <- dm %>%
-       group_by(Species, Development) %>%
-       summarise(
-          sd_f_head = sd(f_head, na.rm = TRUE),
-          sd_m_head = sd(m_head, na.rm = TRUE),
-          sd_f_body = sd(f_body, na.rm = TRUE),
-          sd_m_body = sd(m_body, na.rm = TRUE),
-          .groups = "drop"
-         )
+  group_by(Species, Development) %>%
+  summarise(
+    sd_f_head = sd(f_head, na.rm = TRUE),
+    mean_f_head = mean(f_head, na.rm = TRUE),
+    cv_f_head = sd(f_head, na.rm = TRUE)/mean(f_head), 
+    sd_m_head = sd(m_head, na.rm = TRUE),
+    mean_m_head = mean(m_head, na.rm = TRUE),
+    cv_m_head = sd(m_head, na.rm = TRUE)/mean(m_head),
+    sd_f_body = sd(f_body, na.rm = TRUE),
+    mean_f_body = mean(f_body, na.rm = TRUE),
+    cv_f_body = sd(f_body, na.rm = TRUE)/mean(f_body), 
+    sd_m_body = sd(m_body, na.rm = TRUE),
+    mean_m_body = mean(m_body, na.rm = TRUE),
+    cv_m_body = sd(m_body, na.rm = TRUE)/mean(m_body),
+    .groups = "drop"
+  )
 }
 
 {
     result_long <- result %>%
-      pivot_longer(
-        cols = c(sd_f_head, sd_m_head, sd_f_body, sd_m_body),
-        names_to = "measure",
-        values_to = "variation"
-       ) %>%
-        separate(measure, into = c("stat", "sex", "trait"), sep = "_") %>%
-        select(-stat)
-        names(result_long)
+  pivot_longer(
+    cols = c(cv_f_head, cv_m_head, cv_f_body, cv_m_body),
+    names_to = "measure",
+    values_to = "variation"
+  ) %>%
+  separate(measure, into = c("stat", "sex", "trait"), sep = "_") %>%
+  select(-stat)
+names(result_long))
 }
 
 {
@@ -85,7 +93,7 @@
         theme_classic() +
         labs(
           x = "Development",
-          y = "Mean variation",
+          y = "Mean CV",
           fill = "Sex"
         )
 }
@@ -94,27 +102,24 @@
 
 {
     result_overall <- dm %>%
-      group_by(Species, Development) %>%
-      summarise(
-          head_var = mean(c(
-            sd(f_head, na.rm = TRUE),
-            sd(m_head, na.rm = TRUE)
-          ), na.rm = TRUE),
-          body_var = mean(c(
-            sd(f_body, na.rm = TRUE),
-            sd(m_body, na.rm = TRUE)
-          ), na.rm = TRUE),
-          .groups = "drop"
-        )
-}
-
-{
-      result_overall_long <- result_overall %>%
-          pivot_longer(
-            cols = c(head_var, body_var),
-            names_to = "trait",
-            values_to = "variation"
-          )
+  group_by(Species, Development) %>%
+  summarise(
+    head_var = mean(c(
+      sd(f_head, na.rm = TRUE)/mean(f_head),
+      sd(m_head, na.rm = TRUE)/mean(m_head)
+    ), na.rm = TRUE),
+    body_var = mean(c(
+      sd(f_body, na.rm = TRUE)/mean(f_body),
+      sd(m_body, na.rm = TRUE)/mean(m_body)
+    ), na.rm = TRUE),
+    .groups = "drop"
+  )
+  result_overall_long <- result_overall %>%
+    pivot_longer(
+      cols = c(head_var, body_var),
+      names_to = "trait",
+      values_to = "variation"
+    )
 }
 
 # Plot Overall Variation
@@ -140,7 +145,7 @@
            theme_classic() +
            labs(
              x = "Development",
-             y = "Mean variation",
+             y = "Mean CV",
              title = "Overall variation by developmental type"
             )
   }
@@ -165,7 +170,7 @@
                 strip.background = element_blank())+
               labs(
                 x = "Worker Type",
-                y = "Mean variation",
+                y = "Mean CV",
             )
   }
 
@@ -208,8 +213,8 @@
     filter(trait == "body") 
   
 # testing overall development  effects on head and body variation
-  t.test(variation ~ Development, data =  result_long_head)
-  t.test(variation ~ Development, data = result_long_body)
+  wilcox.test(variation ~ Development, data =  result_long_head)
+  wilcox.test(variation ~ Development, data = result_long_body)
   
   result_long$Development = as.factor(result_long$Development)
 # testing development and sex significance
