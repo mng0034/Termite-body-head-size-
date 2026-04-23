@@ -77,6 +77,13 @@ names(result_long))
         se = sd(variation, na.rm = TRUE) / sqrt(n()),
         .groups = "drop"
       )
+# Descriptive statistics
+descriptive_summary <- result_dev %>%
+  group_by(Development, trait) %>%
+  summarise(
+    mean_cv = mean(mean_cv, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
 }
 
 #Plot Developmental Variation between females and males
